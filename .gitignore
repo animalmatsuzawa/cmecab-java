@@ -1,5 +1,0 @@
-*.class
-*.jar
-*.iws
-build/
-.gradle/
