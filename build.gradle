@@ -14,8 +14,34 @@ compileTestJava.options.encoding = 'UTF-8'
 javadoc.options.encoding = 'UTF-8'
 javadoc.options.charSet = 'UTF-8'
 
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'com.ryanharter.gradle-git-repo:gradle-plugin:1.0.1'
+	}
+}
+
+apply plugin: 'git-repo'
+
 configurations {
     deployerJars
+}
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+     classifier = 'sources'
+     from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn:javadoc) {
+     classifier = 'javadoc'
+     from javadoc.destinationDir
+}
+
+artifacts {
+     archives sourcesJar
+     archives javadocJar
 }
 
 repositories {
@@ -40,10 +66,21 @@ dependencies {
 uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
-        repository(url: System.properties['cmecab_java.repositoryUrl']) {
-            authentication(
-                    userName: System.properties['cmecab_java.repositoryUser'],
-                    password: System.properties['cmecab_java.repositoryPassword'])
-        }
+        repository(url: System.properties['cmecab_java.repositoryUrl'])
+        snapshotRepository(url: System.properties['cmecab_java.repositoryUrl'])
+            pom.groupId = 'net.moraleboost'
+            pom.artifactId = archivesBaseName
+            pom.version = version
+
+            pom.project {
+                name = 'Mecab java bindingn'
+                packaging = 'jar'
+                description = 'Mecab java bindingn.'
+            }
+//        repository(url: System.properties['cmecab_java.repositoryUrl']) {
+//            authentication(
+//                    userName: System.properties['cmecab_java.repositoryUser'],
+//                    password: System.properties['cmecab_java.repositoryPassword'])
+//        }
     }
 }

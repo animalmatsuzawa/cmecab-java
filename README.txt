@@ -1,3 +1,7 @@
+
+gh-pagesブランチにmavenリポジトリとして使うためにtakscape/cmecab-javaからforkしてます。
+
+-----
 cmecab-java
 
 1. これは何？
